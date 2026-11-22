@@ -3,7 +3,7 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
-GEN_INIT_CPIO="$ROOT/linux-samsung-gtaba8/usr/gen_init_cpio"
+GEN_INIT_CPIO="$ROOT/linux/usr/gen_init_cpio"
 APK_DIR="$ROOT/dist/alpine-apks"
 OUT_CPIO_GZ="$ROOT/dist/initramfs-phase3.cpio.gz"
 

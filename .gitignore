@@ -55,10 +55,6 @@ dkms.conf
 *.dwo
 logs/
 
-# decoupled repositories
-linux-samsung-gtaba8/
-pmaports/
-
 # build artifacts
 dist/
 *.img

@@ -59,7 +59,7 @@ Basing your fork on the `v7.3` LTS tag gives you a long-term supported baseline 
 
 Keep the kernel source and Nura packaging decoupled across two local Git repositories to simplify rebasing and eventual upstreaming:
 
-1. **Kernel Repository (`linux-samsung-gtaba8`):**
+1. **Kernel Repository (`linux`):**
    * Branch directly from `torvalds/linux` tag `v7.3`.
    * Maintain strict commit separation: keep cherry-picked `ums9230-mainline` driver commits distinct from your board-specific `ums512-samsung-gtaba8.dts` and panel driver commits. This keeps your branch clean for eventual submission to LKML or Nura's shared `linux-postmarketos-sprd` kernel package.
 2. **Nura Packaging Repository (`pmaports`):**

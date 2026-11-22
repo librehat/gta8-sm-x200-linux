@@ -1,0 +1,8 @@
+[submodule "pmaports"]
+	path = pmaports
+	url = git@github.com:librehat/pmaports.git
+	branch = main
+[submodule "linux"]
+	path = linux
+	url = git@github.com:librehat/linux.git
+	branch = gtaba8-v7.3

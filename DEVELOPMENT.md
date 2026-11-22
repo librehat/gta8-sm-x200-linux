@@ -45,7 +45,7 @@ pipx ensurepath        # makes sure ~/.local/bin is on PATH
 
 | Path | Source |
 | :--- | :--- |
-| `linux-samsung-gtaba8/` | `torvalds/linux` tag `v7.3`, plus cherry-picks from Otto Pflüger's `ums9230-mainline` (Codeberg) and custom patches |
+| `linux/` | `torvalds/linux` tag `v7.3`, plus cherry-picks from Otto Pflüger's `ums9230-mainline` (Codeberg) and custom patches |
 | `pmaports/` | Nura Edge `pmaports`, `master` branch (rolling `edge` channel) |
 | `firmware/` | Stock Samsung `boot.img`, decompiled downstream DTS, `hardware_map.txt` |
 
@@ -80,7 +80,7 @@ mkbootimg --help | head -n 1
 abootimg 2>&1 | head -n 1
 command -v qemu-aarch64
 
-# Kernel smoke test (from linux-samsung-gtaba8/)
+# Kernel smoke test (from linux/)
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz
 ```
@@ -88,7 +88,7 @@ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz
 ## 6. Standard Build Commands
 
 ```bash
-# Kernel + DTB (in linux-samsung-gtaba8/)
+# Kernel + DTB (in linux/)
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz sprd/ums512-samsung-gtaba8.dtb
 

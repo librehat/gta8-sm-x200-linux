@@ -18,7 +18,7 @@ Keep concerns strictly separated across directories to prevent merge conflicts a
 | `AGENTS.md` | Root agent instructions and guardrails | Read-only unless explicitly asked to update |
 | `agents/NURA_EDGE_V7_3_PORTING_PLAN.md` | Master phased specification and verification gates | Read-only reference (update status notes only on request) |
 | `firmware/` | Stock Samsung `boot.img`, decompiled downstream `.dts`, and `hardware_map.txt` | Write extracted artifacts here; never modify raw stock binaries |
-| `linux-samsung-gtaba8/` | Kernel tree branched from `v7.3` (`arch/arm64/boot/dts/sprd/`) | Full read/write within assigned task scope |
+| `linux/` | Kernel tree branched from `v7.3` (`arch/arm64/boot/dts/sprd/`) | Full read/write within assigned task scope |
 | `pmaports/` | Nura Edge packaging (`device/testing/device-samsung-gtaba8`, `linux-samsung-gtaba8`) | Full read/write within assigned task scope |
 | `logs/` | Captured `ramoops`/`pstore` dumps, serial logs, and `dmesg` outputs | Append/write diagnostic logs for root-cause analysis |
 
@@ -40,7 +40,7 @@ Keep concerns strictly separated across directories to prevent merge conflicts a
 
 Use these commands inside the Linux sandbox to validate changes before requesting hardware testing:
 
-- **Kernel & DTB Cross-Compilation (`linux-samsung-gtaba8/`):**
+- **Kernel & DTB Cross-Compilation (`linux/`):**
   ```bash
   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz sprd/ums512-samsung-gtaba8.dtb
