@@ -1,0 +1,138 @@
+# Samsung Galaxy Tab A8 10.5 (2021) Hardware Map
+# Verified against live device: SM-X200 (gta8wifi, bootloader X200ZCS6DYG6)
+# SoC: Unisoc Tiger T618 (UMS512-AC / sharkl5pro / ums512_25c10)
+
+[SYSTEM_ON_CHIP]
+SoC: Unisoc Tiger T618 / UMS512-AC (sharkl5pro)
+Architecture: ARMv8-A (aarch64)
+CPUs:
+  - Cluster 0 (BIG): 2x ARM Cortex-A75 (Cores 6-7, up to 2.0 GHz)
+  - Cluster 1 (LITTLE): 6x ARM Cortex-A55 (Cores 0-5, up to 1.8 GHz)
+Interrupt Controller: ARM GICv3
+Timers: ARM generic arch-timer
+
+[MEMORY_MAP]
+DRAM Base: 0x80000000
+DRAM Size: 0xfffff000 (4 GB LPDDR4X: cs0 = 0x80000000, cs1 = 0x7ffff000; androidboot.ddrsize=4096M)
+Bootloader LK Jump Address: 0x80080000 (needs 2MB alignment reloc stub for mainline text_offset=0)
+Bootloader Splash Framebuffer: 0x9e000000 (1200x1920 @ 32bpp, stride 4800, XRGB8888, size 0x9e4000)
+Ramoops / pstore Region: 0xfff80000 (Size: 0x40000 / 256 KiB; record-size = 0x8000, console-size = 0x8000, pmsg-size = 0x8000)
+CMA Allocation: 256 MiB (required for multi-plane KMS scanout buffers at 1200x1920)
+
+[RESERVED_MEMORY_REGIONS]
+# Critical no-map regions verified from live /sys/firmware/fdt:
+ddrbist-mem@80000000:      size 0x1000    (no-map)
+sysdumpinfo-mem@80001000:  size 0x1000    (no-map)
+rebootescrow@81ff0000:     size 0x10000   (no-map)
+audio-mem@87500000:        size 0x300000  (no-map)
+sipc-mem@87800000:         size 0x800000  (no-map)
+sp-ddr-mem@88000000:       size 0x300000  (no-map)
+sipc_ss-mem@88300000:      size 0x80000   (no-map)
+audiodsp-mem@89000000:     size 0x600000  (no-map)
+cp-modem@89600000:         size 0x5500000 (no-map)
+sec_debug_region@8f000000: size 0x900000  (no-map)
+ss_plog@8f900000:          size 0x200000  (no-map)
+uboot_log-mem@92400000:    size 0x80000   (no-map)
+sml-mem@94000000:          size 0x40000   (no-map, EL3 ATF / SML)
+tos-mem@94040000:          size 0x5fc0000 (no-map, TrustOS TEE)
+sh-mem@9a000000:           size 0x100000  (no-map)
+logobuffer@9e000000:       size 0x9e4000  (no-map, LK splash framebuffer)
+ramoops@fff80000:          size 0x40000   (pstore persistent RAM, mapped)
+debug-mem@100000000:       size 0x1000    (no-map)
+
+[BOOT_IMAGE_PARAMETERS]
+Bootloader Version: X200ZCS6DYG6 (unlocked, flash.locked=0, verifiedbootstate=orange)
+Header Version: 2
+Page Size: 2048 bytes
+Kernel Base: 0x00000000
+Kernel Offset: 0x00008000
+Ramdisk Offset: 0x01000000
+Tags Offset: 0x00000100
+DTB Offset: 0x01f00000
+LK Fixed Load Addresses: PC=0x80080000, dt_addr=0x83f00000, ramdisk=0xa0000000
+Partition Size: 67108864 bytes (64 MiB, boot=/dev/block/mmcblk0p37, recovery=/dev/block/mmcblk0p38)
+Kernel Cmdline: earlycon=sprd_serial,0x70100000,115200n8 console=tty0 console=ttyS1,115200n8 loglevel=7 rdinit=/init panic=10 clk_ignore_unused pd_ignore_unused cma=256M
+DT Table Magic: 0xd7b7ab1e (mkdtboimg, total_size must match dtb_size without padding)
+AVB Footer: Hash footer v1.0 required (algorithm NONE, partition_size 67108864 for boot, 8388608 for dtbo)
+DTBO Neutralisation: dtbo-noop.img with sprd,sc-id="ums512 25c10 1000" and id 0x1100 (dtbo=/dev/block/mmcblk0p39)
+
+[EARLY_DEBUG_AND_SERIAL]
+UART0: 0x70000000 (internal / modem)
+UART1: 0x70100000 (Debug serial console, 115200n8, sprd-serial / earlycon)
+Console: earlycon=sprd_serial,0x70100000,115200n8 console=ttyS1,115200n8
+
+[POWER_MANAGEMENT_AND_PMIC]
+PMIC: Unisoc SC2730 (verified: androidboot.pmic.chipid=2730)
+Interface: ADI Bus / SPI @ 0x32100000 (GIC_SPI 173 / 0xad, spi-max-frequency = 26000000)
+Regulator Driver: drivers/regulator/sc2730-regulator.c (native in Linux v7.3 LTS)
+Key Voltage Rails:
+  - VDDCORE (DCDC)
+  - VDDARM0 / VDDARM1 (CPU clusters)
+  - VDDMEM / VDDGEN
+  - LDOs: VDDLDO0, VDDLDO1, VDDCAMIO, VDDCAMA0/1, VDDCAMD0/1, VDDVIB, VDDEMMCCORE
+Fuel Gauge: SC2730 FGU @ 0x4002e000
+External DCDC: FAN53555 @ AON I2C0 (0x32060000, addr 0x60)
+Charger ICs:
+  - TI BQ25890 @ I2C4 (0x70700000, addr 0x6a)
+  - SGM4154X @ I2C4 (addr 0x3b)
+  - SY6970 @ I2C4 (addr 0x68)
+
+[STORAGE]
+eMMC 5.1:
+  - Controller: sdhci-sprd @ 0x71400000 (sdio3, GIC_SPI 10)
+  - Capacity: 128 GB (0x1d1f000000 bytes)
+  - Block Device: /dev/mmcblk0
+  - Key Partitions:
+    - boot:      /dev/block/mmcblk0p37 (67108864 bytes / 64 MiB)
+    - recovery:  /dev/block/mmcblk0p38 (67108864 bytes / 64 MiB)
+    - dtbo:      /dev/block/mmcblk0p39 (8388608 bytes / 8 MiB)
+    - uboot_log: /dev/block/mmcblk0p30 (16777216 bytes / 16 MiB)
+    - super:     /dev/block/mmcblk0p46 (6740246528 bytes / ~6.74 GB)
+    - userdata:  /dev/block/mmcblk0p53 (117168910336 bytes / ~117 GB)
+MicroSD Slot:
+  - Controller: sdhci-sprd @ 0x71100000 (sdio0, GIC_SPI 19)
+WCN / Wi-Fi SDIO:
+  - Controller: sdhci-sprd @ 0x71200000 (sdio1, GIC_SPI 20)
+
+[DISPLAY_AND_GRAPHICS]
+Display Controller: Unisoc DPU r4p0 @ 0x20300000
+DSI Host Controller: MIPI DSI @ 0x20300800
+Panel Interface: MIPI DSI Video Mode (4 data lanes, burst mode, mipi_clk=510MHz)
+Verified Unit Panel: Novatek NT36523B TDDI (lcd_nt36523b_qc_inx_mipi_hdp, lcd_id=ID40)
+Other Stock DT Panel Variants:
+  - Himax HX83102E (lcd_hx83102e_ls_hsd_mipi_hdp, lcd_hx83102e_xy_hsd_mipi_hdp)
+  - FocalTech FT8201AB (lcd_ft8201ab_boe_boe_mipi_hdp)
+Resolution: 1200 x 1920 (WUXGA) @ 60 Hz
+Framebuffer: 1200x1920 XRGB8888 @ 0x9e000000 (stride 4800, size 0x9e4000)
+3D GPU: ARM Mali-G52 MP2 (Bifrost) @ 0x60000000
+GPU Driver: Mesa / panfrost (CONFIG_DRM_PANFROST)
+
+[INPUT_AND_SENSORS]
+Touchscreen:
+  - Active Unit: sec_touchscreen (Novatek NT36523B TDDI)
+  - Interface: SPI2 @ 0x70a00000 (Chip Select 1: spi2.1)
+  - Firmware: nt36523b_qc_inx_fw.bin (/lib/firmware/novatek_ts_fw.bin)
+  - Alternates: Himax HX83102E (spi2.0), FocalTech FT5x46 (spi2.2)
+Physical Buttons:
+  - gpio-keys (Power: PMIC EIC, Volume Down: PMIC EIC, Volume Up: AP GPIO)
+Sensors (verified on unit):
+  - Magnetometer: qmc6308
+  - Hall Sensor: hall_irq (magnetic flip cover)
+  - SAR / Grip Sensors: grip_sensor, grip_sensor_sub, grip_sensor_wifi
+
+[AUDIO]
+Primary Codec: Unisoc SC2730 internal audio codec (sprdphone-sc2730 Headset Jack / Keyboard)
+External Amp / DAC:
+  - AW88266 Smart K amplifier
+  - AK4377 Hi-Fi DAC @ I2C2 (0x70500000, addr 0x10)
+DSP: Spreadtrum AGDSP / SIPC audio processing
+
+[CONNECTIVITY_AND_WIRELESS]
+USB:
+  - Controller: musb-sprd (sprd,sharkl5pro-musb) @ 0x5fff0000 (GIC_SPI 69, /soc/aon/usb@5fff0000)
+  - Mode: peripheral / OTG dual-role
+  - Bring-up Config: USB Gadget ConfigFS (RNDIS / CDC_ECM / CDC_ACM serial console)
+Wi-Fi / Bluetooth (Deferred to Phase 5):
+  - Chipset: Unisoc Marlin3-Lite / SC2355 (UWE5622)
+  - Bus: SDIO @ 0x71200000 (sdio1) + UART
+  - Driver: Out-of-tree sprdwl_ng / uwe5622

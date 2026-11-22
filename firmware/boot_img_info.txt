@@ -1,0 +1,36 @@
+Android Boot Image Header Info (v2) - Verified Against SM-X200 (gta8wifi)
+==========================================================================
+BOOTLOADER_VERSION := X200ZCS6DYG6 (unlocked, flash.locked=0, verifiedbootstate=orange, veritymode=disabled)
+BOARD_BOOTIMG_HEADER_VERSION := 2
+BOARD_KERNEL_BASE := 0x00000000
+BOARD_KERNEL_PAGESIZE := 2048
+BOARD_KERNEL_OFFSET := 0x00008000
+BOARD_RAMDISK_OFFSET := 0x01000000
+BOARD_KERNEL_TAGS_OFFSET := 0x00000100
+BOARD_DTB_OFFSET := 0x01f00000
+BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
+BOARD_DTBOIMAGE_PARTITION_SIZE := 8388608
+
+Real Device Partition Mapping (/dev/block/by-name/):
+  boot      -> /dev/block/mmcblk0p37 (67108864 bytes / 64 MiB)
+  recovery  -> /dev/block/mmcblk0p38 (67108864 bytes / 64 MiB)
+  dtbo      -> /dev/block/mmcblk0p39 (8388608 bytes / 8 MiB)
+  uboot_log -> /dev/block/mmcblk0p30 (16777216 bytes / 16 MiB)
+
+Stock Boot Partition Header (mmcblk0p37):
+  Magic: ANDROID! (v2, pagesize=2048, header_size=1660)
+  kernel_size=57756160 (kernel_addr=0x8000), ramdisk_size=0, dtb_size=17765 (dtb_addr=0x1f00000)
+  os_version=11.0.0 (patch 2025-08), name="SRPUI28B006", cmdline="console=ttyS1,115200n8"
+  AVB v1.0 AVBf footer: orig_size=57778192 (0x371a010), vbmeta_off=0x371b000, vbmeta_size=2112 (SHA256_RSA4096)
+
+OrangeFox Recovery Partition Header (mmcblk0p38):
+  Magic: ANDROID! (v2, pagesize=2048, header_size=1660)
+  kernel_size=21813264 (kernel_addr=0x8000), ramdisk_size=24212452 (ramdisk_addr=0x1000000)
+  dtb_size=163537 (dtb_addr=0x1f00000), cmdline="console=ttyS1,115200n8 buildvariant=eng"
+
+Confirmed LK (uboot_log) Handoff Behavior:
+  - Fixed load addresses: PC=0x80080000, dt_addr=0x83f00000, ramdisk=0xa0000000
+  - Requires AVB v1.0 AVBf hash footer on both boot (64 MiB) and dtbo (8 MiB) partitions
+  - Normal boot selects DTBO id=0x1100 (androidboot.dtbo_idx=4 on stock 5-entry DTBO table)
+  - dtbo-noop.img provides a single empty id=0x1100 overlay with AVB footer (orig=366)
+  - Note: LK still performs DTBO merge by board_id=0x1100 regardless of sprd,sc-id, so dtbo-noop.img is mandatory

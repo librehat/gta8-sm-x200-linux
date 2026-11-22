@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: MIT
+/*
+ * No-op DTBO entry for the SM-X200/X205 (UMS512) LK bootloader.
+ *
+ * LK always merges the dtbo partition entry matching board_id 0x1100 into
+ * the DT it hands to the kernel, regardless of the kernel DT's sprd,sc-id.
+ * The stock Android overlay corrupts a mainline DT, so flash this empty
+ * overlay instead. tools/extract-firmware.sh builds it into
+ * firmware/dtbo-noop.img (DT table + AVB hash footer for the 8 MiB partition).
+ */
+/dts-v1/;
+
+/ {
+	model = "Unisoc UMS512 25c10 board";
+	compatible = "sprd,ums512-25c10";
+	sprd,sc-id = "ums512 25c10 1000";
+	sprd,board_id = <0x1100>;
+
+	fragment {
+		target-path = "/";
+
+		__overlay__ {
+		};
+	};
+};
