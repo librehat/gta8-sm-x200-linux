@@ -42,16 +42,20 @@ Basing your fork on the `v7.3` LTS tag gives you a long-term supported baseline 
 ```
 [Phase 1: Scaffolding] ──► [Phase 2: Core Boot] ──► [Phase 3: USB & Shell]
                                                             │
-[Phase 5: Peripherals] ◄── [Phase 4: Graphics]  ◄───────────┘
+┌───────────────────────────────────────────────────────────┘
+▼
+[Phase 4: Graphics] ──► [Phase 5A: Touch & Keys] ──► [Phase 5B: Battery & Charger] ──► [Phase 5C: Wireless]
 ```
 
 | Phase | Milestone | Key Technical Deliverables | Verification Gate |
 | :--- | :--- | :--- | :--- |
 | **1. Scaffolding** | Firmware extraction & Nura `pmaports` setup | Unpack stock `boot.img` headers/offsets; decompile stock DTB; initialise `pmbootstrap` on `edge` channel with `device-samsung-gtaba8` and `linux-samsung-gtaba8`. | `pmbootstrap` builds skeleton packages and generates valid Samsung `boot.img` headers. |
 | **2. Core Boot** | Minimal DTS, `earlycon` & RAMOOPS | Create `ums512-samsung-gtaba8.dts` in `arch/arm64/boot/dts/sprd/`; configure `SC2730` PMIC nodes, memory map, and `pstore`/`ramoops` reserved RAM. | Device boots `v7.3` via Heimdall; kernel panic or boot logs persist in RAMOOPS across reboots. |
-| **3. USB & Shell** | USB gadget networking & Nura initramfs | Cherry-pick `UMS512` USB PHY patches; enable `CONFIG_USB_CONFIGFS_F_RNDIS` / `CDC_ECM`; boot Nura `mkinitfs` ramdisk. | Host PC detects `usb0` (`172.16.42.1`); active SSH shell into Nura initramfs; eMMC visible under `/dev/mmcblk0`. |
-| **4. Graphics** | `simplefb` console to native DRM/Panfrost | Bring up `simple-framebuffer` on bootloader-mapped RAM for `tty0`; port Samsung panel DCS init sequences into a DRM panel driver; enable `panfrost`. | Hardware-accelerated Wayland session (KDE Plasma Mobile) renders at native `1920x1200`. |
-| **5. Peripherals** | Touch, battery fuel gauge & wireless | Map I2C touchscreen controller and GPIO keys (`libinput`); expose `SC2730` ADC/charger nodes under `/sys/class/power_supply/`; integrate `uwe5622` Wi-Fi/BT firmware. | Multi-touch input, battery percentage reporting, and WLAN connectivity work on a Nura Edge rootfs. |
+| **3. USB & Shell** | USB gadget networking & Nura initramfs | Cherry-pick `UMS512` USB PHY patches; enable `CONFIG_USB_CONFIGFS_F_RNDIS` / `CDC_ECM`; boot Nura `mkinitfs` ramdisk. | Host PC detects `usb0` (`172.16.42.1`); active SSH/telnet shell into Nura initramfs; eMMC visible under `/dev/mmcblk0`. |
+| **4. Graphics** | `simplefb` console to native DRM/Panfrost | Bring up bootloader-adopted `ums512_dpu_kms` (`card0`) and `panfrost` (`card1`/`renderD128`) at `1200x1920@60Hz`; configure KWin Wayland environment. | Hardware-accelerated Wayland session (KDE Plasma Mobile) renders at native `1200x1920`. |
+| **5A. Touch & Keys** *(Done)* | Multi-touch SPI & hardware buttons (`libinput`) | Port Novatek NT36523B TDDI host-download driver on `SPI2` (`0x70a00000`, `spi2.1`); load `nt36523b_qc_inx_fw.bin`; verify `sec_touchscreen` & `gpio-keys`. | 10-point multi-touch input (`event0`) and physical keys unlock and control Plasma Mobile on a Nura Edge rootfs. |
+| **5B. Battery & Charger** | `SC2730` fuel gauge & USB charger | Wire `SC2730` FGU (`0x4002e000` / `sc27xx_fuel_gauge`) with SM-X200 OCV/temperature tables and I2C4 charger IC (`bq25890`/`sy6970`/`sgm4154x`) under `/sys/class/power_supply/`. | Live battery percentage, voltage, current, and charging status report accurately in `upower` / Plasma Mobile. |
+| **5C. Wireless (`uwe5622`)** | Marlin3-Lite (`SC2355`) Wi-Fi & Bluetooth | Enable SDIO1 (`0x71200000`), integrate and port isolated out-of-tree `uwe5622` (`sprdwcn` / `sprdwl_ng`) Wi-Fi & BT drivers to `v7.3`, and deploy firmware. | WLAN association (`wlan0`) and Bluetooth work reliably on a Nura Edge rootfs without destabilizing core subsystems. |
 
 ---
 
