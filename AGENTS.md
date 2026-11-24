@@ -15,6 +15,7 @@ Keep concerns strictly separated across directories to prevent merge conflicts a
 
 | Path | Purpose | Agent Permissions |
 | :--- | :--- | :--- |
+| `README.md` | Project description | Read-only reference (update status notes only on request)
 | `AGENTS.md` | Root agent instructions and guardrails | Read-only unless explicitly asked to update |
 | `agents/NURA_EDGE_V7_3_PORTING_PLAN.md` | Master phased specification and verification gates | Read-only reference (update status notes only on request) |
 | `firmware/` | Stock Samsung `boot.img`, decompiled downstream `.dts`, and `hardware_map.txt` | Write extracted artifacts here; never modify raw stock binaries |
