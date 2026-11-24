@@ -23,8 +23,11 @@
 #   device_live.{dtb,dts}                  live FDT, device identifiers masked
 #   dtbo-noop.img                          tools/dtbo-noop.dts as flashable dtbo
 #
-# usage: extract-firmware.sh [--pull | --ap AP_*.tar.md5] [--force]
-#                            [--in DIR] [--out DIR] [--dtbo-idx N] [--no-scrub]
+#   uwe5622/                               --pull-wireless: wcnmodem.bin & INIs
+#
+# usage: extract-firmware.sh [--pull | --ap AP_*.tar.md5] [--pull-wireless]
+#                            [--force] [--in DIR] [--out DIR]
+#                            [--dtbo-idx N] [--no-scrub]
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -41,9 +44,9 @@ DTBO_PART_SIZE=8388608
 NOOP_SALT=a087e9a3effdab5240800ccfa64a5043de5b89479875b1c1f145ddbf294d822b
 HEADER_BYTES=65536
 
-PULL=0 AP="" FORCE=0 SCRUB=1
+PULL=0 PULL_WIRELESS=0 AP="" FORCE=0 SCRUB=1
 
-usage() { sed -n '3,27s/^# \{0,1\}//p' "$0"; exit "${1:-0}"; }
+usage() { sed -n '3,30s/^# \{0,1\}//p' "$0"; exit "${1:-0}"; }
 log() { printf '>> %s\n' "$*" >&2; }
 warn() { printf 'WARNING: %s\n' "$*" >&2; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
@@ -52,6 +55,7 @@ need() { for c; do command -v "$c" >/dev/null || die "missing tool: $c"; done; }
 while [ $# -gt 0 ]; do
 	case $1 in
 	--pull) PULL=1 ;;
+	--pull-wireless) PULL_WIRELESS=1 ;;
 	--ap) AP=${2:?--ap needs a file}; shift ;;
 	--force) FORCE=1 ;;
 	--in) IN=${2:?}; shift ;;
@@ -168,8 +172,39 @@ PY
 
 header() { head -c "$HEADER_BYTES" "$1" >"$2"; }
 
+pull_wireless() {
+	need adb
+	[ "$(adb shell id -u | tr -d '\r')" = 0 ] ||
+		die "adb shell is not root; boot into OrangeFox/TWRP recovery first"
+	local wdir="$OUT/uwe5622" dev="/dev/block/by-name/wcnmodem" dst want got f path
+	mkdir -p "$wdir"
+	dst="$wdir/wcnmodem.bin"
+	if ! skip "$dst"; then
+		log "pulling $dev"
+		adb exec-out cat "$dev" >"$TMP/wcnmodem.bin"
+		want=$(adb shell blockdev --getsize64 "$dev" | tr -d '\r')
+		got=$(stat -c %s "$TMP/wcnmodem.bin")
+		[ "$want" = "$got" ] || die "wcnmodem: pulled $got bytes, partition is $want"
+		mv "$TMP/wcnmodem.bin" "$dst"
+	fi
+	adb shell '[ -d /vendor/etc/wifi ] || mount /vendor 2>/dev/null || true'
+	for f in /vendor/etc/wifi/wifi_board_config.ini \
+		/vendor/etc/wifi/wifi_*.ini \
+		/vendor/etc/bluetooth/bt_configure_*.ini; do
+		for path in $(adb shell "ls -1 $f 2>/dev/null" | tr -d '\r'); do
+			dst="$wdir/$(basename "$path")"
+			skip "$dst" && continue
+			log "pulling $path"
+			adb exec-out cat "$path" >"$TMP/wireless.tmp"
+			[ -s "$TMP/wireless.tmp" ] && mv "$TMP/wireless.tmp" "$dst"
+		done
+	done
+	log "wireless firmware staged in $wdir"
+}
+
 [ "$PULL" = 1 ] && pull_adb
 [ -n "$AP" ] && unpack_ap
+[ "$PULL_WIRELESS" = 1 ] && pull_wireless
 mkdir -p "$OUT"
 
 if [ -f "$BOOT" ]; then
