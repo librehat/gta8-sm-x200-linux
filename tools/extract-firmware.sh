@@ -189,7 +189,10 @@ pull_wireless() {
 	fi
 	adb shell '[ -d /vendor/etc/wifi ] || mount /vendor 2>/dev/null || true'
 	for f in /vendor/etc/wifi/wifi_board_config.ini \
+		/vendor/etc/wifi_board_config.ini \
+		/vendor/firmware/wifi_*.ini \
 		/vendor/etc/wifi/wifi_*.ini \
+		/vendor/etc/bt_configure_*.ini \
 		/vendor/etc/bluetooth/bt_configure_*.ini; do
 		for path in $(adb shell "ls -1 $f 2>/dev/null" | tr -d '\r'); do
 			dst="$wdir/$(basename "$path")"
