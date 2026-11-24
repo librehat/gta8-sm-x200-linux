@@ -17,8 +17,12 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
 EXPORT_DIR="/tmp/postmarketOS-export"
 FW_DIR="$ROOT/firmware/uwe5622"
+TS_DIR="$ROOT/firmware/touchscreen"
+FW_STAGE="$ROOT/firmware/.pkg-stage"
 DTBO_IMG="$ROOT/firmware/dtbo-noop.img"
 DEFAULT_PASSWORD="123456"
+
+trap 'rm -rf "$FW_STAGE"' EXIT
 
 WITH_DTBO=0
 NO_REBOOT=0
@@ -59,9 +63,20 @@ cmd_build() {
 	if [ ! -f "$FW_DIR/wifi_board_config.ini" ]; then
 		warn "missing $FW_DIR/wifi_board_config.ini; Wi-Fi board config may fail unless staged"
 	fi
+	if [ ! -f "$TS_DIR/nt36523b_qc_inx_fw.bin" ]; then
+		warn "missing $TS_DIR/nt36523b_qc_inx_fw.bin; touchscreen will lag or fail without firmware"
+		warn "stage it via: $ROOT/tools/extract-firmware.sh --pull-touchscreen (or copy .bin to $TS_DIR/)"
+	fi
 
-	log "building firmware-samsung-gtaba8 from $FW_DIR"
-	pmbootstrap build firmware-samsung-gtaba8 --src="$FW_DIR" --force
+	rm -rf "$FW_STAGE"
+	mkdir -p "$FW_STAGE/uwe5622" "$FW_STAGE/touchscreen"
+	cp -a "$FW_DIR/." "$FW_STAGE/uwe5622/"
+	if compgen -G "$TS_DIR/*.bin" >/dev/null; then
+		cp -a "$TS_DIR"/*.bin "$FW_STAGE/touchscreen/"
+	fi
+
+	log "building firmware-samsung-gtaba8 from $FW_STAGE"
+	pmbootstrap build firmware-samsung-gtaba8 --src="$FW_STAGE" --force
 
 	log "building device-samsung-gtaba8"
 	pmbootstrap build device-samsung-gtaba8 --force

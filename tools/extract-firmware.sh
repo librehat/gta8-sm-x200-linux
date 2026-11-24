@@ -24,8 +24,10 @@
 #   dtbo-noop.img                          tools/dtbo-noop.dts as flashable dtbo
 #
 #   uwe5622/                               --pull-wireless: wcnmodem.bin & INIs
+#   touchscreen/                           --pull-touchscreen: nt36523b*.bin
 #
-# usage: extract-firmware.sh [--pull | --ap AP_*.tar.md5] [--pull-wireless]
+# usage: extract-firmware.sh [--pull | --ap AP_*.tar.md5]
+#                            [--pull-wireless] [--pull-touchscreen]
 #                            [--force] [--in DIR] [--out DIR]
 #                            [--dtbo-idx N] [--no-scrub]
 set -euo pipefail
@@ -44,9 +46,9 @@ DTBO_PART_SIZE=8388608
 NOOP_SALT=a087e9a3effdab5240800ccfa64a5043de5b89479875b1c1f145ddbf294d822b
 HEADER_BYTES=65536
 
-PULL=0 PULL_WIRELESS=0 AP="" FORCE=0 SCRUB=1
+PULL=0 PULL_WIRELESS=0 PULL_TOUCHSCREEN=0 AP="" FORCE=0 SCRUB=1
 
-usage() { sed -n '3,30s/^# \{0,1\}//p' "$0"; exit "${1:-0}"; }
+usage() { sed -n '3,31s/^# \{0,1\}//p' "$0"; exit "${1:-0}"; }
 log() { printf '>> %s\n' "$*" >&2; }
 warn() { printf 'WARNING: %s\n' "$*" >&2; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
@@ -56,6 +58,7 @@ while [ $# -gt 0 ]; do
 	case $1 in
 	--pull) PULL=1 ;;
 	--pull-wireless) PULL_WIRELESS=1 ;;
+	--pull-touchscreen) PULL_TOUCHSCREEN=1 ;;
 	--ap) AP=${2:?--ap needs a file}; shift ;;
 	--force) FORCE=1 ;;
 	--in) IN=${2:?}; shift ;;
@@ -205,9 +208,37 @@ pull_wireless() {
 	log "wireless firmware staged in $wdir"
 }
 
+pull_touchscreen() {
+	need adb
+	[ "$(adb shell id -u | tr -d '\r')" = 0 ] ||
+		die "adb shell is not root; boot into OrangeFox/TWRP recovery first"
+	local tdir="$OUT/touchscreen" dst f path found=0
+	mkdir -p "$tdir"
+	adb shell '[ -d /vendor/firmware ] || mount /vendor 2>/dev/null || true'
+	for f in /vendor/firmware/nt36523b*.bin \
+		/vendor/etc/firmware/nt36523b*.bin \
+		/vendor/firmware_mnt/nt36523b*.bin \
+		/vendor/firmware/tsp_novatek/nt36523b*.bin; do
+		for path in $(adb shell "ls -1 $f 2>/dev/null" | tr -d '\r'); do
+			dst="$tdir/$(basename "$path")"
+			found=1
+			skip "$dst" && continue
+			log "pulling $path"
+			adb exec-out cat "$path" >"$TMP/ts.tmp"
+			[ -s "$TMP/ts.tmp" ] && mv "$TMP/ts.tmp" "$dst"
+		done
+	done
+	if [ "$found" = 0 ]; then
+		warn "no nt36523b*.bin found under /vendor on device"
+	else
+		log "touchscreen firmware staged in $tdir"
+	fi
+}
+
 [ "$PULL" = 1 ] && pull_adb
 [ -n "$AP" ] && unpack_ap
 [ "$PULL_WIRELESS" = 1 ] && pull_wireless
+[ "$PULL_TOUCHSCREEN" = 1 ] && pull_touchscreen
 mkdir -p "$OUT"
 
 if [ -f "$BOOT" ]; then
