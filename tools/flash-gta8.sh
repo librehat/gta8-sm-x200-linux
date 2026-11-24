@@ -18,6 +18,7 @@ ROOT="$(cd "$HERE/.." && pwd)"
 EXPORT_DIR="/tmp/postmarketOS-export"
 FW_DIR="$ROOT/firmware/uwe5622"
 DTBO_IMG="$ROOT/firmware/dtbo-noop.img"
+DEFAULT_PASSWORD="123456"
 
 WITH_DTBO=0
 NO_REBOOT=0
@@ -68,8 +69,20 @@ cmd_build() {
 	log "building linux-samsung-gtaba8 from $ROOT/linux"
 	pmbootstrap build linux-samsung-gtaba8 --src="$ROOT/linux" --force
 
-	log "building rootfs image (pmbootstrap install ${INSTALL_ARGS[*]:-})"
-	pmbootstrap install "${INSTALL_ARGS[@]}"
+	local -a install_cmd=(pmbootstrap install)
+	local has_pw=0 arg
+	for arg in "${INSTALL_ARGS[@]}"; do
+		case $arg in
+		--password|--password=*) has_pw=1 ;;
+		esac
+	done
+	if [ "$has_pw" = 0 ]; then
+		install_cmd+=(--password "$DEFAULT_PASSWORD")
+	fi
+	install_cmd+=("${INSTALL_ARGS[@]}")
+
+	log "building rootfs image (${install_cmd[*]})"
+	"${install_cmd[@]}"
 
 	log "exporting images to $EXPORT_DIR"
 	pmbootstrap export
