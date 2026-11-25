@@ -122,11 +122,15 @@ cmd_build_kernel() {
 	log "building linux-samsung-gtaba8 from $ROOT/linux"
 	pmbootstrap build linux-samsung-gtaba8 --src="$ROOT/linux" --force
 
+	log "upgrading linux-samsung-gtaba8 in device rootfs chroot"
+	pmbootstrap chroot -r -- sh -c 'apk update && apk upgrade linux-samsung-gtaba8 && apk fix --reinstall linux-samsung-gtaba8'
+
 	log "rebuilding initramfs and exporting boot.img"
 	pmbootstrap initfs
 	pmbootstrap export
 
 	ls -lhL "$EXPORT_DIR/boot.img"
+	strings "$(readlink -f "$EXPORT_DIR/boot.img")" | grep -m1 "Linux version " || true
 }
 
 run_heimdall() {
