@@ -6,6 +6,7 @@
 #
 # usage:
 #   flash-gta8.sh build [-- <pmbootstrap install args...>]
+#   flash-gta8.sh install [-- <pmbootstrap install args...>]
 #   flash-gta8.sh build-kernel
 #   flash-gta8.sh flash [--with-dtbo] [--no-reboot]
 #   flash-gta8.sh flash-kernel [--with-dtbo] [--no-reboot]
@@ -29,7 +30,7 @@ NO_REBOOT=0
 INSTALL_ARGS=()
 
 usage() {
-	sed -n '3,14s/^# \{0,1\}//p' "$0"
+	sed -n '3,15s/^# \{0,1\}//p' "$0"
 	exit "${1:-0}"
 }
 
@@ -83,6 +84,16 @@ cmd_build() {
 
 	log "building linux-samsung-gtaba8 from $ROOT/linux"
 	pmbootstrap build linux-samsung-gtaba8 --src="$ROOT/linux" --force
+
+	cmd_install
+}
+
+cmd_install() {
+	need pmbootstrap
+
+	# Reset chroot mounts and stale /dev/install* loop nodes before installing.
+	log "cleaning up stale pmbootstrap chroots/loop devices"
+	pmbootstrap shutdown
 
 	local -a install_cmd=(pmbootstrap install)
 	local has_pw=0 arg
@@ -157,7 +168,7 @@ cmd=$1
 shift
 
 case $cmd in
-build)
+build|install)
 	if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
 		usage 0
 	fi
@@ -165,9 +176,9 @@ build)
 		shift
 		INSTALL_ARGS=("$@")
 	elif [ $# -gt 0 ]; then
-		die "unexpected arguments for build: $* (pass pmbootstrap install args after '--')"
+		die "unexpected arguments for $cmd: $* (pass pmbootstrap install args after '--')"
 	fi
-	cmd_build
+	"cmd_$cmd"
 	;;
 build-kernel)
 	[ $# -eq 0 ] || { [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ] && usage 0 || die "unexpected argument: $1"; }
