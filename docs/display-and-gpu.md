@@ -11,11 +11,9 @@
 
 ### Display Quirks
 - **Panel-Vendor Agnostic**: Adopts LK's pre-initialized MIPI-DSI video link rather than re-initializing DSI from scratch, working across SM-X200 panel variants (`novatek-nt36523` panel driver `71b301f00f28` also present for reference).
-- **KWin Device Selection & Software Cursor** (`294b091cf`, `d7b1f8392`):
+- **KWin Device Selection**:
   - [`50-samsung-gtaba8-kwin.conf`](../pmaports/device/testing/device-samsung-gtaba8/50-samsung-gtaba8-kwin.conf) and [`kwin.sh`](../pmaports/device/testing/device-samsung-gtaba8/kwin.sh) set:
     - `KWIN_DRM_DEVICES=/dev/dri/card0`
-    - `KWIN_FORCE_SW_CURSOR=1`
-  - `KWIN_DRM_USE_MODIFIERS=0` was dropped (`d7b1f8392`) now that `ums512_dpu_kms` advertises `DRM_FORMAT_MOD_LINEAR` (`efa35a6c4539`).
 - **Clock/Power Domain Retention**: Boot cmdline includes `clk_ignore_unused pd_ignore_unused` so display clocks/domains set up by LK stay alive across probe.
 
 ---
