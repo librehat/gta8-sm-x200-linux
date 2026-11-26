@@ -16,7 +16,7 @@ AI Agents must read `AGENTS.md` and follow the instructions outlined there for a
 | Physical Buttons | Working |
 | Display | Working |
 | Touchscreen | Working |
-| GPU | Parital |
+| GPU | Working |
 | Audio | Not working |
 | Wi-Fi | Working |
 | Bluetooth | Working |
