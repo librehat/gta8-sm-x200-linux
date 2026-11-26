@@ -16,11 +16,11 @@ AI Agents must read `AGENTS.md` and follow the instructions outlined there for a
 | Physical Buttons | Working |
 | Display | Working |
 | Touchscreen | Working |
-| GPU | Partial (unstable) |
+| GPU | Parital |
 | Audio | Not working |
 | Wi-Fi | Working |
 | Bluetooth | Working |
-| Camera | Untested |
+| Camera | Not working |
 | Battery Monitoring | Working |
 | Charging | Working |
 | USB OTG | Untested |
