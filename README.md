@@ -12,7 +12,8 @@ AI Agents must read `AGENTS.md` and follow the instructions outlined there for a
 
 | Feature | Status |
 | --- | --- |
-| Storage | Working |
+| eMMC | Working |
+| microSD | Not tested |
 | Physical Buttons | Working |
 | Display | Working |
 | Touchscreen | Working |
@@ -23,9 +24,10 @@ AI Agents must read `AGENTS.md` and follow the instructions outlined there for a
 | Camera | Not working |
 | Battery Monitoring | Working |
 | Charging | Working |
-| USB OTG | Untested |
+| USB OTG | Not working |
 | USB Networking | Working |
-| Sensors | Untested |
+| Sensors | Not working |
+| Suspend / Deep Sleep | Not working |
 
 ## Hardware Documentation
 
