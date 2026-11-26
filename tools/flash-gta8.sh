@@ -21,7 +21,7 @@ FW_DIR="$ROOT/firmware/uwe5622"
 TS_DIR="$ROOT/firmware/touchscreen"
 FW_STAGE="$ROOT/firmware/.pkg-stage"
 DTBO_IMG="$ROOT/firmware/dtbo-noop.img"
-DEFAULT_PASSWORD="123456"
+DEFAULT_PASSWORD="147147"
 
 trap 'rm -rf "$FW_STAGE"' EXIT
 
