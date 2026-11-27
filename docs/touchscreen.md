@@ -20,6 +20,8 @@
    - [`pmaports/device/testing/firmware-samsung-gtaba8/APKBUILD`](../pmaports/device/testing/firmware-samsung-gtaba8/APKBUILD#L43-L57) installs `nt36523b*.bin` into `/usr/lib/firmware/` **and** appends `/usr/lib/firmware/nt36523b_qc_inx_fw.bin` to `/usr/share/mkinitfs/files/30-initramfs-firmware-samsung-gtaba8.files` so `mkinitfs` bundles it into the initramfs (`tools/extract-firmware.sh` / `tools/flash-gta8.sh`).
 3. **ESD Workqueue & Checksum Dumps** (`bcecc23f5753`):
    - Moved ESD recovery onto an unbound workqueue and ratelimited SPI packet checksum error dumps (`i2c/spi packet checksum not match`) seen around early boot / USB state transitions.
+4. **PM Suspend / Resume & Wakeup Policy**:
+   - `nvt_ts_pm_suspend()` calls `nvt_ts_suspend()`, which cancels ESD polling and any pending charger-notify work and masks the IRQ while skipping SPI `DSTB` (`0x11`), because `ums512_dpu_kms` never pulses display `RESX` on resume (sending `0x11` without `RESX` trapped the shared `NT36523B` TDDI die in `0xA1`/`0xFD` SPI reload storms and caused display flickering). On resume, `nvt_ts_pm_complete()` schedules a full (`full=1`) FW host-download 50 ms after DPU panel sleep-out and userspace thaw. `device_init_wakeup()` is only enabled when `aot_enable` is active (disabled by default to prevent accidental wakes in sleep).
 
 ---
 

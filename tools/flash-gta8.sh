@@ -123,7 +123,7 @@ cmd_build_kernel() {
 	pmbootstrap build linux-samsung-gtaba8 --src="$ROOT/linux" --force
 
 	log "upgrading linux-samsung-gtaba8 in device rootfs chroot"
-	pmbootstrap chroot -r -- sh -c 'apk update && apk upgrade linux-samsung-gtaba8 && apk fix --reinstall linux-samsung-gtaba8'
+	pmbootstrap chroot -r -- sh -c 'apk update && apk upgrade --no-interactive linux-samsung-gtaba8 && apk fix --no-interactive --reinstall linux-samsung-gtaba8'
 
 	log "rebuilding initramfs and exporting boot.img"
 	pmbootstrap initfs

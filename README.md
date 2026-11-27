@@ -27,7 +27,7 @@ AI Agents must read `AGENTS.md` and follow the instructions outlined there for a
 | USB OTG | Not working |
 | USB Networking | Working |
 | Sensors | Not working |
-| Suspend / Deep Sleep | Not working |
+| Suspend / Deep Sleep | Working |
 
 ## Hardware Documentation
 
