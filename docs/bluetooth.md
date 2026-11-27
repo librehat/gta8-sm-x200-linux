@@ -6,12 +6,12 @@
 - **Kernel Drivers**:
   - `sprdbt_tty.ko` (`sprd-mtty`, compatible `"sprd,mtty"`, `sprd,name = "ttyBT"`): creates `/dev/ttyBT0` and `/dev/ttyBT1`, manages BT rfkill (`MARLIN_BLUETOOTH`), and transports HCI packets over SDIO (`BT_TX_CHANNEL` / `BT_RX_CHANNEL`).
   - Mainline `hci_uart` (`CONFIG_BT_HCIUART=y`, `CONFIG_BT_HCIUART_H4=y`, `N_HCI=15`): `hci_uart_write_work` runs in sleepable workqueue context, compatible with `sprdbt_tty`'s `mtty_write()` which uses `down(&sem_id)` and `GFP_KERNEL`.
-- **Firmware Files** (`firmware-samsung-gtaba8`, in `/usr/lib/firmware/uwe5622/`):
+- **Firmware Files** (`firmware-samsung-gta8`, in `/usr/lib/firmware/uwe5622/`):
   - `bt_configure_pskey.ini` (44 fields, 160-byte PSKey configuration struct)
   - `bt_configure_rf.ini` (20 fields, 252-byte RF calibration & power table struct)
-- **Userspace Attach Daemon & OpenRC Service** (`device-samsung-gtaba8` + `device-samsung-gtaba8-openrc`):
-  - [`sprd-bt-attach.c`](../pmaports/device/testing/device-samsung-gtaba8/sprd-bt-attach.c) -> `/usr/bin/sprd-bt-attach`
-  - [`sprd-bt.initd`](../pmaports/device/testing/device-samsung-gtaba8/sprd-bt.initd) -> `/etc/init.d/sprd-bt` (enabled in `default` runlevel `before bluetooth`)
+- **Userspace Attach Daemon & OpenRC Service** (`device-samsung-gta8` + `device-samsung-gta8-openrc`):
+  - [`sprd-bt-attach.c`](../pmaports/device/testing/device-samsung-gta8/sprd-bt-attach.c) -> `/usr/bin/sprd-bt-attach`
+  - [`sprd-bt.initd`](../pmaports/device/testing/device-samsung-gta8/sprd-bt.initd) -> `/etc/init.d/sprd-bt` (enabled in `default` runlevel `before bluetooth`)
 
 ## Quirks & Bring-Up Details
 
@@ -37,4 +37,4 @@ Once all three return Command Complete with `status=0x00`, `sprd-bt-attach` sets
 - `sprd-bt-attach` replaces placeholders / all-zero addresses with a deterministic locally-administered unicast BD_ADDR derived from `/etc/machine-id` (`mac[5] = (mac[5] & 0xfe) | 0x02`).
 
 ### 5. `pmbootstrap` Cross-Compile Note (`!pmb:crossdirect`)
-- Building `sprd-bt-attach.c` inside `pmbootstrap` hit `cc: fatal error: cannot execute 'cc1': posix_spawnp: No such file or directory` under `crossdirect-aarch64`. [`device-samsung-gtaba8/APKBUILD`](../pmaports/device/testing/device-samsung-gtaba8/APKBUILD) sets `!pmb:crossdirect` in `options` (`3148179c6`) so `sprd-bt-attach` compiles cleanly inside the `aarch64` buildroot.
+- Building `sprd-bt-attach.c` inside `pmbootstrap` hit `cc: fatal error: cannot execute 'cc1': posix_spawnp: No such file or directory` under `crossdirect-aarch64`. [`device-samsung-gta8/APKBUILD`](../pmaports/device/testing/device-samsung-gta8/APKBUILD) sets `!pmb:crossdirect` in `options` (`3148179c6`) so `sprd-bt-attach` compiles cleanly inside the `aarch64` buildroot.

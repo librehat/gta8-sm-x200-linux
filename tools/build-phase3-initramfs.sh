@@ -94,7 +94,7 @@ cat <<'EOF' > "$STAGE/init"
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export HOME=/root
 export TERM=vt100
-export PS1='root@gtaba8:\w# '
+export PS1='root@gta8:\w# '
 
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
@@ -105,7 +105,7 @@ mount -t tmpfs tmpfs /tmp
 mount -t tmpfs tmpfs /run
 mount -t configfs none /sys/kernel/config 2>/dev/null || true
 
-hostname samsung-gtaba8
+hostname samsung-gta8
 ip link set lo up
 ip addr add 127.0.0.1/8 dev lo 2>/dev/null || true
 

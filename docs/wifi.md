@@ -10,7 +10,7 @@
   - GPIOs: `enable-gpios` (`ap_gpio 143`), `reset-gpios` (`ap_gpio 95`), `m2-to-ap-irq-gpios` (`ap_gpio 94`), `m2-wakeup-ap-gpios` (`ap_gpio 32`), `permit-ap-send-gpios` (`ap_gpio 121`), `m2-to-ap-coexist-gpios` (`ap_gpio 119`)
   - SDIO mode flags: `blksz-512` (external GPIO RX IRQ via `m2-wakeup-ap-gpios`, no `data-irq`, no `adma-tx`/`adma-rx`)
 - **Drivers**: Out-of-tree isolated modules sourced from Armbian's `sprd-ums512` tree under `linux/drivers/net/wireless/uwe5622/` (`uwe5622_bsp_sdio.ko` + `sprdwl_ng.ko`), creating `wlan0` and `p2p-dev-wlan0`.
-- **Firmware**: Extracted from the stock Samsung `wcnmodem` partition / `/vendor/etc/wifi` via `tools/extract-firmware.sh --pull-wireless` and packaged in `firmware-samsung-gtaba8`:
+- **Firmware**: Extracted from the stock Samsung `wcnmodem` partition / `/vendor/etc/wifi` via `tools/extract-firmware.sh --pull-wireless` and packaged in `firmware-samsung-gta8`:
   - `/usr/lib/firmware/uwe5622/wcnmodem.bin`
   - `/usr/lib/firmware/uwe5622/wifi_board_config.ini`
 

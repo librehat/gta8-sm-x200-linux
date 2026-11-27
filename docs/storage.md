@@ -9,7 +9,7 @@
 
 Internal eMMC 5.1 (`&sdio3`, `/dev/mmcblk0`) is verified working; microSD (`&sdio0`) is configured in DTS and driver code but not yet tested on hardware.
 
-Board-specific `sprd,phy-delay-*` properties in [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L294-L331) match Samsung's calibrated timing values for both controllers.
+Board-specific `sprd,phy-delay-*` properties in [`ums512-samsung-gta8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gta8.dts#L294-L331) match Samsung's calibrated timing values for both controllers.
 
 ## Driver & Quirks (`sdhci-sprd`)
 

@@ -76,14 +76,14 @@ cmd_build() {
 		cp -a "$TS_DIR"/*.bin "$FW_STAGE/touchscreen/"
 	fi
 
-	log "building firmware-samsung-gtaba8 from $FW_STAGE"
-	pmbootstrap build firmware-samsung-gtaba8 --src="$FW_STAGE" --force
+	log "building firmware-samsung-gta8 from $FW_STAGE"
+	pmbootstrap build firmware-samsung-gta8 --src="$FW_STAGE" --force
 
-	log "building device-samsung-gtaba8"
-	pmbootstrap build device-samsung-gtaba8 --force
+	log "building device-samsung-gta8"
+	pmbootstrap build device-samsung-gta8 --force
 
-	log "building linux-samsung-gtaba8 from $ROOT/linux"
-	pmbootstrap build linux-samsung-gtaba8 --src="$ROOT/linux" --force
+	log "building linux-samsung-gta8 from $ROOT/linux"
+	pmbootstrap build linux-samsung-gta8 --src="$ROOT/linux" --force
 
 	cmd_install
 }
@@ -113,17 +113,17 @@ cmd_install() {
 	log "exporting images to $EXPORT_DIR"
 	pmbootstrap export
 
-	ls -lhL "$EXPORT_DIR/samsung-gtaba8.img" "$EXPORT_DIR/boot.img"
+	ls -lhL "$EXPORT_DIR/samsung-gta8.img" "$EXPORT_DIR/boot.img"
 }
 
 cmd_build_kernel() {
 	need pmbootstrap
 
-	log "building linux-samsung-gtaba8 from $ROOT/linux"
-	pmbootstrap build linux-samsung-gtaba8 --src="$ROOT/linux" --force
+	log "building linux-samsung-gta8 from $ROOT/linux"
+	pmbootstrap build linux-samsung-gta8 --src="$ROOT/linux" --force
 
-	log "upgrading linux-samsung-gtaba8 in device rootfs chroot"
-	pmbootstrap chroot -r -- sh -c 'apk update && apk upgrade --no-interactive linux-samsung-gtaba8 && apk fix --no-interactive --reinstall linux-samsung-gtaba8'
+	log "upgrading linux-samsung-gta8 in device rootfs chroot"
+	pmbootstrap chroot -r -- sh -c 'apk update && apk upgrade --no-interactive linux-samsung-gta8 && apk fix --no-interactive --reinstall linux-samsung-gta8'
 
 	log "rebuilding initramfs and exporting boot.img"
 	pmbootstrap initfs
@@ -137,7 +137,7 @@ run_heimdall() {
 	local flash_rootfs=$1
 	need heimdall
 
-	if [ ! -e "$EXPORT_DIR/boot.img" ] || { [ "$flash_rootfs" = 1 ] && [ ! -e "$EXPORT_DIR/samsung-gtaba8.img" ]; }; then
+	if [ ! -e "$EXPORT_DIR/boot.img" ] || { [ "$flash_rootfs" = 1 ] && [ ! -e "$EXPORT_DIR/samsung-gta8.img" ]; }; then
 		need pmbootstrap
 		log "exporting missing images to $EXPORT_DIR"
 		pmbootstrap export
@@ -149,7 +149,7 @@ run_heimdall() {
 
 	local -a args=(flash --wait --boot "$boot_img")
 	if [ "$flash_rootfs" = 1 ]; then
-		rootfs_img="$(readlink -f "$EXPORT_DIR/samsung-gtaba8.img")"
+		rootfs_img="$(readlink -f "$EXPORT_DIR/samsung-gta8.img")"
 		[ -s "$rootfs_img" ] || die "missing or empty rootfs image: $rootfs_img"
 		args+=(--userdata "$rootfs_img")
 	fi

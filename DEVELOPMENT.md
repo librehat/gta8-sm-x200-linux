@@ -55,14 +55,14 @@ pipx ensurepath        # makes sure ~/.local/bin is on PATH
 - **Kernel Commit Layering:** Keep `linux/` history cleanly layered so mainline patches remain easy to rebase or extract:
   1. Mainline Linux `v7.3` LTS baseline (native `UMS512` clocks/pinctrl/storage/serial and `SC2730` PMIC regulators).
   2. Cherry-picked `ums9230-mainline` and shared Unisoc driver fixes (`phy-sprd-usb2`, `musb-sprd`, `sdhci-sprd`, `spi-sprd`, `i2c-sprd`, `clk-sprd`, `sc27xx`).
-  3. Board-specific commits (`ums512-samsung-gtaba8.dts`, `ums512_dpu_kms`, `nt36xxx`).
+  3. Board-specific commits (`ums512-samsung-gta8.dts`, `ums512_dpu_kms`, `nt36xxx`).
   4. Isolated out-of-tree `uwe5622` wireless commits (`drivers/net/wireless/uwe5622/`).
 
 ### `pmaports` Packages (`pmaports/device/testing/`)
 
-- **`device-samsung-gtaba8`**: Board metadata (`deviceinfo` with `chassis="tablet"`, `heimdall-bootimg`, `mkbootimg` v2 offsets, ConfigFS RNDIS), `kernel-cmdline.conf`, `postprocess-bootimg.sh` (appends the AVB hash footer), and `sprd-bt-attach` + OpenRC service (`device-samsung-gtaba8-openrc`).
-- **`linux-samsung-gtaba8`**: `APKBUILD`, `config-samsung-gtaba8.aarch64`, and `reloc.S`. Builds uncompressed `Image`, prepends the 2 MiB alignment relocation stub, wraps the DTB in an Android DT table, and accepts `--src="$PWD/linux"` for local kernel builds.
-- **`firmware-samsung-gtaba8`**: Packages proprietary `UWE5622` wireless/BT firmware and Novatek `NT36523B` touchscreen firmware (bundling the touchscreen `.bin` into initramfs via `mkinitfs`).
+- **`device-samsung-gta8`**: Board metadata (`deviceinfo` with `chassis="tablet"`, `heimdall-bootimg`, `mkbootimg` v2 offsets, ConfigFS RNDIS), `kernel-cmdline.conf`, `postprocess-bootimg.sh` (appends the AVB hash footer), and `sprd-bt-attach` + OpenRC service (`device-samsung-gta8-openrc`).
+- **`linux-samsung-gta8`**: `APKBUILD`, `config-samsung-gta8.aarch64`, and `reloc.S`. Builds uncompressed `Image`, prepends the 2 MiB alignment relocation stub, wraps the DTB in an Android DT table, and accepts `--src="$PWD/linux"` for local kernel builds.
+- **`firmware-samsung-gta8`**: Packages proprietary `UWE5622` wireless/BT firmware and Novatek `NT36523B` touchscreen firmware (bundling the touchscreen `.bin` into initramfs via `mkinitfs`).
 
 ## 4. One-Time Setup
 
@@ -73,7 +73,7 @@ pipx ensurepath        # makes sure ~/.local/bin is on PATH
    Android udev rules (`android-udev-rules`) are pulled in with `adb`. Check that `heimdall` can open the device in Download mode.
 2. **Initialise `pmbootstrap`.**
    ```bash
-   pmbootstrap init                   # channel: edge; device: samsung-gtaba8 (once it exists)
+   pmbootstrap init                   # channel: edge; device: samsung-gta8 (once it exists)
    ```
    Point `pmbootstrap` at the local `pmaports/` checkout when prompted. Alternatively, run `pmbootstrap --aports <path>`.
 3. **Verify the `binfmt` registration** for aarch64 chroots:
@@ -105,20 +105,20 @@ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image
 ```bash
 # Kernel + DTB (in linux/)
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
-make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image sprd/ums512-samsung-gtaba8.dtb
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image sprd/ums512-samsung-gta8.dtb
 
 # DT binding validation (in linux/)
-make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CHECK_DTBS=y sprd/ums512-samsung-gtaba8.dtb
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CHECK_DTBS=y sprd/ums512-samsung-gta8.dtb
 
 # Recommended repository build helpers (stages firmware, builds from ./linux, exports images)
 ./tools/flash-gta8.sh build         # full build: firmware + device + local kernel + rootfs image
 ./tools/flash-gta8.sh build-kernel  # fast kernel/initramfs-only rebuild (no rootfs rebuild)
 
 # Equivalent manual pmbootstrap commands (stage firmware first with tools/extract-firmware.sh)
-pmbootstrap checksum device-samsung-gtaba8 linux-samsung-gtaba8
-pmbootstrap build firmware-samsung-gtaba8 --src="$PWD/firmware" --force
-pmbootstrap build device-samsung-gtaba8 --force
-pmbootstrap build linux-samsung-gtaba8 --src="$PWD/linux" --force
+pmbootstrap checksum device-samsung-gta8 linux-samsung-gta8
+pmbootstrap build firmware-samsung-gta8 --src="$PWD/firmware" --force
+pmbootstrap build device-samsung-gta8 --force
+pmbootstrap build linux-samsung-gta8 --src="$PWD/linux" --force
 pmbootstrap initfs
 ```
 
@@ -134,7 +134,7 @@ Flashing is always done by the user, never by an agent.
 ./tools/flash-gta8.sh build-kernel
 ./tools/flash-gta8.sh flash-kernel
 # Or via pmbootstrap directly:
-#   pmbootstrap build linux-samsung-gtaba8 --src="$PWD/linux" --force && pmbootstrap initfs && pmbootstrap flasher flash_kernel
+#   pmbootstrap build linux-samsung-gta8 --src="$PWD/linux" --force && pmbootstrap initfs && pmbootstrap flasher flash_kernel
 
 # Bring up host-side USB gadget networking (auto-detects interface, sets 172.16.42.2/24)
 ./tools/usbnet-up.sh

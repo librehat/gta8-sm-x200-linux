@@ -7,7 +7,7 @@
 - **Gadget Function**: ConfigFS USB gadget (`CONFIG_USB_CONFIGFS_RNDIS`, `CONFIG_USB_CONFIGFS_ECM`, `CONFIG_USB_CONFIGFS_NCM`, `CONFIG_USB_CONFIGFS_ACM`) bringing up `usb0` at `172.16.42.1/24` (host `172.16.42.2`, SSH `user@172.16.42.1` on the installed rootfs, or `root@172.16.42.1` / telnet in initramfs).
 - **Host Script**: [`tools/usbnet-up.sh`](../tools/usbnet-up.sh) configures the host USB interface (`172.16.42.2/24`).
 
-*(Note: USB OTG host mode (`dr_mode = "otg"`) is currently untested; [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts) enables `dr_mode = "peripheral"` plus `usb_otg_vbus` / `sgm4154x_otg_vbus` regulators for future OTG work.)*
+*(Note: USB OTG host mode (`dr_mode = "otg"`) is currently untested; [`ums512-samsung-gta8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gta8.dts) enables `dr_mode = "peripheral"` plus `usb_otg_vbus` / `sgm4154x_otg_vbus` regulators for future OTG work.)*
 
 ## UMS512 PHY & MUSB Quirks
 

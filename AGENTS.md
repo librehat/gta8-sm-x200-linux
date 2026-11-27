@@ -22,7 +22,7 @@ Keep concerns strictly separated across directories to prevent merge conflicts a
 | `TODO.md` | Active follow-up kernel and userspace tasks | Update when tasks are added or verified |
 | `firmware/` | Stock Samsung `boot.img`, decompiled downstream `.dts`, and `hardware_map.txt` | Write extracted artifacts here; never modify raw stock binaries |
 | `linux/` | Kernel tree branched from `v7.3` (`arch/arm64/boot/dts/sprd/`) | Full read/write within assigned task scope |
-| `pmaports/` | Nura Edge packaging (`device/testing/device-samsung-gtaba8`, `linux-samsung-gtaba8`, `firmware-samsung-gtaba8`) | Full read/write within assigned task scope |
+| `pmaports/` | Nura Edge packaging (`device/testing/device-samsung-gta8`, `linux-samsung-gta8`, `firmware-samsung-gta8`) | Full read/write within assigned task scope |
 | `tools/` | Firmware extraction, `dtbo-noop`, `reloc.S`, build/flash, and USB networking helper scripts | Read/write within assigned task scope |
 | `logs/` | Captured `ramoops`/`pstore` dumps, serial logs, and `dmesg` outputs | Append/write diagnostic logs for root-cause analysis |
 
@@ -31,10 +31,10 @@ Keep concerns strictly separated across directories to prevent merge conflicts a
 ## 3. Architectural & Coding Guardrails (CRITICAL)
 
 1. **No Downstream 4.14 Hacks:** Never port legacy Android 4.14 kernel workarounds (e.g., `CONFIG_ANDROID_PARANOID_NETWORK`, proprietary Mali `midgard` blobs, or vendor binder/ashmem shims). Target clean mainline interfaces (`panfrost`, `CONFIGFS` USB gadgets, `simpledrm`/`ums512_dpu_kms`).
-2. **Use Mainline `sprd` Naming:** Upstream Linux places Unisoc architecture code under `sprd` (`arch/arm64/boot/dts/sprd/`, `drivers/clk/sprd/`, `drivers/pinctrl/sprd/`, `drivers/mmc/host/sdhci-sprd.c`), **not** `unisoc`. Follow upstream naming conventions for all new DTS files (e.g., `ums512-samsung-gtaba8.dts`).
+2. **Use Mainline `sprd` Naming:** Upstream Linux places Unisoc architecture code under `sprd` (`arch/arm64/boot/dts/sprd/`, `drivers/clk/sprd/`, `drivers/pinctrl/sprd/`, `drivers/mmc/host/sdhci-sprd.c`), **not** `unisoc`. Follow upstream naming conventions for all new DTS files (e.g., `ums512-samsung-gta8.dts`).
 3. **Leverage Native `v7.3` `SC2730` Support:** The Unisoc `SC2730` PMIC regulator driver (`CONFIG_REGULATOR_SC2730`) is mainline in `v7.3`. Do not apply out-of-tree PMIC regulator patches.
 4. **Strict Git Commit Hygiene:**
-   - Keep cherry-picked commits from `ums9230-mainline` (USB PHY, clock/SDHCI/SPI/I2C fixes) isolated from board-specific `ums512-samsung-gtaba8.dts` and DRM/touch driver commits.
+   - Keep cherry-picked commits from `ums9230-mainline` (USB PHY, clock/SDHCI/SPI/I2C fixes) isolated from board-specific `ums512-samsung-gta8.dts` and DRM/touch driver commits.
    - Write clear, subsystem-prefixed commit messages (e.g., `arm64: dts: sprd: Add initial Samsung Galaxy Tab A8 (SM-X200) board`).
 5. **Keep Out-of-Tree Wireless (`uwe5622`) Isolated:** Keep out-of-tree `drivers/net/wireless/uwe5622/` commits isolated from mainline and board commits, and avoid changes that destabilize core subsystems.
 
@@ -47,20 +47,20 @@ Use these commands inside the Linux sandbox to validate changes before requestin
 - **Kernel & DTB Cross-Compilation (`linux/`):**
   ```bash
   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
-  make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image sprd/ums512-samsung-gtaba8.dtb
+  make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image sprd/ums512-samsung-gta8.dtb
   ```
 - **Device Tree Syntax & Binding Validation (`linux/`):**
   ```bash
-  make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CHECK_DTBS=y sprd/ums512-samsung-gtaba8.dtb
+  make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CHECK_DTBS=y sprd/ums512-samsung-gta8.dtb
   ```
 - **Nura Edge Package & Initramfs Build (`pmaports/` or repo root):**
   ```bash
   ./tools/flash-gta8.sh build-kernel
   # Or manually:
-  pmbootstrap checksum device-samsung-gtaba8 linux-samsung-gtaba8
-  pmbootstrap build firmware-samsung-gtaba8 --src="$PWD/firmware" --force
-  pmbootstrap build device-samsung-gtaba8 --force
-  pmbootstrap build linux-samsung-gtaba8 --src="$PWD/linux" --force
+  pmbootstrap checksum device-samsung-gta8 linux-samsung-gta8
+  pmbootstrap build firmware-samsung-gta8 --src="$PWD/firmware" --force
+  pmbootstrap build device-samsung-gta8 --force
+  pmbootstrap build linux-samsung-gta8 --src="$PWD/linux" --force
   pmbootstrap initfs
   ```
 
@@ -70,7 +70,7 @@ Use these commands inside the Linux sandbox to validate changes before requestin
 
 ### Autonomous Execution Loop
 1. **Plan:** Read the relevant subsystem notes in `docs/`, workflow in `DEVELOPMENT.md`, and open tasks in `TODO.md`, then generate an implementation plan detailing the exact files, Kconfig symbols, and DTS nodes to create or modify.
-2. **Execute:** Implement changes in small, atomic steps. When spawning parallel subagents, isolate them strictly by workspace domain (e.g., Subagent A updates kernel DTS/drivers while Subagent B updates `pmaports/device/testing/*gtaba8*`).
+2. **Execute:** Implement changes in small, atomic steps. When spawning parallel subagents, isolate them strictly by workspace domain (e.g., Subagent A updates kernel DTS/drivers while Subagent B updates `pmaports/device/testing/*gta8*`).
 3. **Verify Locally:** Compile the kernel, DTB, and `pmbootstrap` packages. Resolve all compiler or `dtc` errors/warnings autonomously before concluding a turn.
 
 ### Mandatory Human-in-the-Loop Checkpoints

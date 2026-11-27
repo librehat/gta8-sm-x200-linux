@@ -4,7 +4,7 @@
 
 ### Hardware & DTS
 - **Bus**: `&spi2` (`0x70a00000`, chip-select `1`, `spi-max-frequency = <9600000>`).
-- **DTS Node**: [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L344-L361) (`touchscreen@1`, compatible `"novatek,NVT-ts-spi-a8"`):
+- **DTS Node**: [`ums512-samsung-gta8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gta8.dts#L344-L361) (`touchscreen@1`, compatible `"novatek,NVT-ts-spi-a8"`):
   - Resolution: `1200x1920`, up to `10` touch points
   - `novatek,swrst-n8-addr = <0x0003f0fe>`, `novatek,spi-rd-fast-addr = <0x0003f310>`
   - `novatek,reset-gpio = <&ap_gpio 145 GPIO_ACTIVE_HIGH>`
@@ -17,7 +17,7 @@
    - `spi-sprd` had bugs in full-duplex `TX+RX` transfers, zero word-delay handling, and `num_chipselect` (required for CS 1 on `spi2`), without which SPI reads from the Novatek IC fail.
 2. **Volatile RAM Firmware Requires Both Initramfs & Rootfs Packaging**:
    - The `NT36523B` TDDI uses volatile SRAM host-download (`nt36523b_qc_inx_fw.bin`, `0x30000` bytes). The driver uploads firmware both when probing in initramfs and on ESD recovery after `switch_root`.
-   - [`pmaports/device/testing/firmware-samsung-gtaba8/APKBUILD`](../pmaports/device/testing/firmware-samsung-gtaba8/APKBUILD#L43-L57) installs `nt36523b*.bin` into `/usr/lib/firmware/` **and** appends `/usr/lib/firmware/nt36523b_qc_inx_fw.bin` to `/usr/share/mkinitfs/files/30-initramfs-firmware-samsung-gtaba8.files` so `mkinitfs` bundles it into the initramfs (`tools/extract-firmware.sh` / `tools/flash-gta8.sh`).
+   - [`pmaports/device/testing/firmware-samsung-gta8/APKBUILD`](../pmaports/device/testing/firmware-samsung-gta8/APKBUILD#L43-L57) installs `nt36523b*.bin` into `/usr/lib/firmware/` **and** appends `/usr/lib/firmware/nt36523b_qc_inx_fw.bin` to `/usr/share/mkinitfs/files/30-initramfs-firmware-samsung-gta8.files` so `mkinitfs` bundles it into the initramfs (`tools/extract-firmware.sh` / `tools/flash-gta8.sh`).
 3. **ESD Workqueue & Checksum Dumps** (`bcecc23f5753`):
    - Moved ESD recovery onto an unbound workqueue and ratelimited SPI packet checksum error dumps (`i2c/spi packet checksum not match`) seen around early boot / USB state transitions.
 4. **PM Suspend / Resume & Wakeup Policy**:
