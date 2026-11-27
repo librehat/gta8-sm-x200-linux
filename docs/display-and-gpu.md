@@ -3,7 +3,7 @@
 ## Display (`ums512_dpu_kms`) — Working
 
 ### Hardware & Architecture
-- **Panel / Mode**: `1200x1920` (`width-mm = <136>`, `height-mm = <225>`, `x8r8g8b8`, bootloader MIPI-DSI video mode initialized by LK at `0x9e000000`, `0x009e4000` B).
+- **Panel / Mode**: `1200x1920@60Hz` (`width-mm = <136>`, `height-mm = <225>`, `x8r8g8b8`, bootloader MIPI-DSI video mode initialized by LK at `0x9e000000`, `0x009e4000` B).
 - **Driver**: Native UMS512 DPU r4p0 KMS driver (`display@20300000`, compatible `"sprd,ums512-dpu-kms"`, `db9560224249`), with `DRM_FORMAT_MOD_LINEAR` support, deterministic `plane->index` hardware layer assignment, and IRQ/event draining on CRTC disable for DPMS blank/unblank cycles (`efa35a6c4539`).
 - **DT Handoff Setup** (`be4c7bd27738`):
   - `framebuffer@9e000000` is marked `status = "disabled"` in `chosen` so `simpledrm` does not bind; `ums512-dpu-kms` reads `sprd,boot-framebuffer = <&framebuffer0>`.
@@ -19,7 +19,7 @@
 ## GPU (Mali-G52 MP2 Bifrost / `panfrost`) — Working
 
 ### Hardware & Drivers
-- **DTS**: `&gpu` (`status = "okay"`, `mali-supply = <&vddgpu>`, compatible `"sprd,ums512-mali"`, `b1a6e1947ff9`, `c3c2d937ec41`).
+- **DTS**: `&gpu` (`status = "okay"`, `mali-supply = <&vddgpu>`, compatible `"sprd,ums512-mali"`, `b1a6e1947ff9`, `c3c2d937ec41`) using Mesa `panfrost` (`CONFIG_DRM_PANFROST`).
 - **Dependencies**:
   - `pmdomain-sprd` (`b0cb56cab9f6`) for UMS512 GPU power domain control.
   - `clk-sprd` reparenting & composite clock DVFS (`6a7f68b897a1`, `9d5357e988f4`): `sprd_comp_determine_rate()` evaluates all candidate mux parents, `sprd_comp_set_rate_and_parent()` sequences divider/mux updates safely, and `gate.c`/`mux.c`/`div.c` use `regmap_update_bits()` to serialize concurrent CCF updates to shared control registers (such as `0x60100004` shared by `gpu-core-gate` and `gpu-core-clk`).

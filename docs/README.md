@@ -7,7 +7,7 @@ Technical documentation for **Nura Edge** (postmarketOS-based) on the **Samsung 
 | Hardware | Document | Kernel Driver / Userspace | Status |
 | :--- | :--- | :--- | :--- |
 | Boot, SoC, Watchdog & Ramoops | [`boot.md`](boot.md) | `LK` handoff, `reloc.S`, `dtbo-noop`, `sc27xx_wdt`, `sc27xx-poweroff`, `ramoops` | Working |
-| Storage (eMMC & microSD) | [`storage.md`](storage.md) | `sdhci-sprd` (`&sdio3`, `&sdio0`) | Working |
+| Storage (eMMC & microSD) | [`storage.md`](storage.md) | `sdhci-sprd` (`&sdio3`, `&sdio0`) | Working (eMMC); microSD untested |
 | USB Peripheral Networking | [`usb.md`](usb.md) | `musb-sprd`, `phy-sprd-usb2`, ConfigFS RNDIS/ACM | Working |
 | Display & GPU | [`display-and-gpu.md`](display-and-gpu.md) | `ums512_dpu_kms`, `panfrost` (`sprd,ums512-mali`), KWin | Working |
 | Touchscreen & Physical Buttons | [`touchscreen.md`](touchscreen.md) | `nt36xxx` (`spi-sprd`), `gpio-keys` (`gpio-eic-sprd`, `sc2730` EIC) | Working |

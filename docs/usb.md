@@ -4,7 +4,7 @@
 
 - **USB2 PHY**: `&hsphy` (`status = "okay"`, `phy-supply = <&vddusb33>`).
 - **Controller**: `&usb` (`status = "okay"`, `dr_mode = "peripheral"` — Mentor Graphics `musb` on Unisoc UMS512).
-- **Gadget Function**: ConfigFS USB gadget (`RNDIS` / `CDC_ECM`) bringing up `usb0` at `172.16.42.1/24` (host `172.16.42.2`, SSH `user@172.16.42.1`).
+- **Gadget Function**: ConfigFS USB gadget (`CONFIG_USB_CONFIGFS_RNDIS`, `CONFIG_USB_CONFIGFS_ECM`, `CONFIG_USB_CONFIGFS_NCM`, `CONFIG_USB_CONFIGFS_ACM`) bringing up `usb0` at `172.16.42.1/24` (host `172.16.42.2`, SSH `user@172.16.42.1` on the installed rootfs, or `root@172.16.42.1` / telnet in initramfs).
 - **Host Script**: [`tools/usbnet-up.sh`](../tools/usbnet-up.sh) configures the host USB interface (`172.16.42.2/24`).
 
 *(Note: USB OTG host mode (`dr_mode = "otg"`) is currently untested; [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts) enables `dr_mode = "peripheral"` plus `usb_otg_vbus` / `sgm4154x_otg_vbus` regulators for future OTG work.)*

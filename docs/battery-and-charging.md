@@ -4,11 +4,11 @@
 
 | Component | DTS Node / Bus | Driver | Key Parameters |
 | :--- | :--- | :--- | :--- |
-| Battery Fuel Gauge | `&sc2730_fgu` (`SC2730` PMIC) | `sc27xx_fuel_gauge` | `sprd,calib-resistance-micro-ohms = <10000>`, `sprd,comp-resistance-mohm = <26>`, 22-point NTC voltage-temp table |
+| Battery Fuel Gauge | `&sc2730_fgu` (`fuel-gauge@c00` on `SC2730` PMIC; `0x4002e000` in downstream hardware map) | `sc27xx_fuel_gauge` | `sprd,calib-resistance-micro-ohms = <10000>`, `sprd,comp-resistance-mohm = <26>`, 22-point NTC voltage-temp table |
 | Battery Model | `bat: battery` (`simple-battery`) | Power supply core | Lithium-ion, `6804000 uAh` design capacity, `4.4 V` max (`4400000 uV`), 21-point `ocv-capacity-table-0` (`4.354 V`..`3.400 V`), `resistance-temp-table` |
 | Switching Charger | `sgm41542_chg: charger@3b` on `&i2c4` (`0x70700000`, addr `0x3b`) | `sgm4154x` | IRQ `&ap_gpio 156 IRQ_TYPE_EDGE_FALLING`, `input-current-limit-microamp = <1500000>`, `input-voltage-limit-microvolt = <4500000>`, `sgm4154x-otg-vbus` regulator (`4.85`–`5.3 V`) |
 
-See [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L202-L223) and [`#L383-L420`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L383-L420).
+See [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L232-L253) and [`#L413-L450`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L413-L450). Live battery percentage, voltage, current, and charging status are exposed under `/sys/class/power_supply/` and consumed by `upower` / Plasma Mobile.
 
 ## Quirks & Fixes
 

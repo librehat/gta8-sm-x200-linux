@@ -7,7 +7,9 @@
 | `&sdio3` | `mmc0` | 8-bit internal eMMC (`HS400ES`, `HS400`, `HS200`, `DDR52`) | `vmmc-supply = <&vddemmccore>` (`3.0 V` range) | `non-removable`, `cap-mmc-hw-reset`, `no-sd`, `no-sdio` |
 | `&sdio0` | `mmc1` | 4-bit microSD (`UHS SDR104`, `SDR50`) | `vmmc-supply = <&vddsdcore>`, `vqmmc-supply = <&vddsdio>` | `cd-gpios = <&eic_sync 19 GPIO_ACTIVE_LOW>`, `no-sdio`, `no-mmc` |
 
-Board-specific `sprd,phy-delay-*` properties in [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L265-L301) match Samsung's calibrated timing values for both controllers.
+Internal eMMC 5.1 (`&sdio3`, `/dev/mmcblk0`) is verified working; microSD (`&sdio0`) is configured in DTS and driver code but not yet tested on hardware.
+
+Board-specific `sprd,phy-delay-*` properties in [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L294-L331) match Samsung's calibrated timing values for both controllers.
 
 ## Driver & Quirks (`sdhci-sprd`)
 

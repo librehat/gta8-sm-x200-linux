@@ -2,14 +2,14 @@
 
 ## Hardware & DTS
 
-- **SoC / Combo Module**: Unisoc `UWE5622` / Marlin3-Lite (`SC2355` AB, hardware chip ID `0x2355b001`, firmware `MARLIN3_20A_W24.24.2`).
+- **SoC / Combo Module**: Unisoc `UWE5622` / Marlin3-Lite (`SC2355` AB, hardware chip ID `0x2355b001`, firmware `MARLIN3_20A_W24.24.2`) — a Wi-Fi/Bluetooth/GNSS combo chip (Wi-Fi and Bluetooth are working; GNSS is not enabled/tested).
 - **Bus**: `&sdio1` (`0x71200000`, alias `mmc2`), 4-bit UHS-I `SDR104` at `208 MHz` (`sprd,phy-delay-sd-uhs-sdr104`, `sprd,phy-delay-sd-uhs-sdr50`, `cap-sdio-irq`, `keep-power-in-suspend`, `non-removable`, `no-sd`, `no-mmc`).
 - **DTS Control Node (`sprd-marlin3`)** & Wi-Fi Platform (`sprd-wlan`, `"sprd,sc2355-wifi"`):
   - Rails: `avdd12-supply = <&vddwcn>`, `avdd33-supply = <&vddwifipa>`, `dcxo18-supply = <&vddsim2>`, `rfcustom-supply = <&vddkpled>`
   - Clocks: `aon_clk CLK_AUX0` (`32k` aux clock), `ext_32k`, `aonapb_gate CLK_AUX0_EB`, `xtal-26m-clk-type = "TSX"`
   - GPIOs: `enable-gpios` (`ap_gpio 143`), `reset-gpios` (`ap_gpio 95`), `m2-to-ap-irq-gpios` (`ap_gpio 94`), `m2-wakeup-ap-gpios` (`ap_gpio 32`), `permit-ap-send-gpios` (`ap_gpio 121`), `m2-to-ap-coexist-gpios` (`ap_gpio 119`)
   - SDIO mode flags: `data-irq`, `blksz-512` (no `adma-tx` / `adma-rx`)
-- **Drivers**: Out-of-tree isolated modules under `linux/drivers/net/wireless/uwe5622/` (`uwe5622_bsp_sdio.ko` + `sprdwl_ng.ko`), creating `wlan0` and `p2p-dev-wlan0`.
+- **Drivers**: Out-of-tree isolated modules sourced from Armbian's `sprd-ums512` tree under `linux/drivers/net/wireless/uwe5622/` (`uwe5622_bsp_sdio.ko` + `sprdwl_ng.ko`), creating `wlan0` and `p2p-dev-wlan0`.
 - **Firmware**: Extracted from the stock Samsung `wcnmodem` partition / `/vendor/etc/wifi` via `tools/extract-firmware.sh --pull-wireless` and packaged in `firmware-samsung-gtaba8`:
   - `/usr/lib/firmware/uwe5622/wcnmodem.bin`
   - `/usr/lib/firmware/uwe5622/wifi_board_config.ini`

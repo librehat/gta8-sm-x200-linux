@@ -4,13 +4,13 @@
 
 ### Hardware & DTS
 - **Bus**: `&spi2` (`0x70a00000`, chip-select `1`, `spi-max-frequency = <9600000>`).
-- **DTS Node**: [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L314-L331) (`touchscreen@1`, compatible `"novatek,NVT-ts-spi-a8"`):
+- **DTS Node**: [`ums512-samsung-gtaba8.dts`](../linux/arch/arm64/boot/dts/sprd/ums512-samsung-gtaba8.dts#L344-L361) (`touchscreen@1`, compatible `"novatek,NVT-ts-spi-a8"`):
   - Resolution: `1200x1920`, up to `10` touch points
   - `novatek,swrst-n8-addr = <0x0003f0fe>`, `novatek,spi-rd-fast-addr = <0x0003f310>`
   - `novatek,reset-gpio = <&ap_gpio 145 GPIO_ACTIVE_HIGH>`
   - `novatek,irq-gpio = <&eic_async 0 IRQ_TYPE_EDGE_RISING>` (`IRQ 20`, `sprd-eic 0 Edge NVT-ts`)
   - `novatek,fw_name = "nt36523b_qc_inx_fw.bin"`
-- **Driver**: Host-download SPI driver `nt36xxx` (`8bced3b688eb`).
+- **Driver**: Host-download SPI driver `nt36xxx` (`8bced3b688eb`), registering evdev/`libinput` input device `sec_touchscreen`.
 
 ### Quirks & Fixes
 1. **`spi-sprd` Full-Duplex & Zero Word-Delay Fixes** (`5f549b6b332e`):
