@@ -1,6 +1,6 @@
 # Hardware Support & Quirks (`SM-X200` / `SM-X205`)
 
-Technical documentation for **Nura Edge** (postmarketOS-based) on the **Samsung Galaxy Tab A8 10.5 (2021)** (`SM-X200` Wi-Fi / `SM-X205` LTE), based on the **Unisoc Tiger T618** (`UMS512` / `sharkl5pro`) SoC and **Linux v7.3 LTS**.
+Technical documentation for **Nura Edge** (postmarketOS-based) on the **Samsung Galaxy Tab A8 10.5 (2021)** (`SM-X200` Wi-Fi / `SM-X205` LTE), based on the **Unisoc Tiger T618** (`UMS512` / `sharkl5pro`) SoC and **Linux v7.3.6**.
 
 ## Subsystem Index
 
