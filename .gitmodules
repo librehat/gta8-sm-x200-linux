@@ -5,4 +5,4 @@
 [submodule "linux"]
 	path = linux
 	url = git@github.com:librehat/linux.git
-	branch = gtaba8-v7.3
+	branch = gta8-v7.3.6
