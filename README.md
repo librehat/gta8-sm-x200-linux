@@ -1,5 +1,9 @@
 # gta8-sm-x200-linux
-Nura (Linux) port for Samsung Galaxy Tab A8 2021 SM-X200
+Nura (postmarketOS) Linux port for Samsung Galaxy Tab A8 2021 SM-X200
+
+## Installation
+
+Read `INSTALL.md` for instructions on installing and flashing this Nura Edge port onto the tablet.
 
 ## Development
 
